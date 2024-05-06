@@ -1,0 +1,17 @@
+{
+  "name": "ez-chatgpt-finetuner-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ez-chatgpt-finetuner-server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Michael Wood",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "https": "^1.0.0",
+    "multer": "^1.4.5-lts.1"
+  }
+}
