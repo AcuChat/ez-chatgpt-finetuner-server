@@ -5,6 +5,11 @@ const fs = require('fs');
 const app = express();
 const cors = require('cors');
 
+/**
+ * Endpoints
+ */
+const create = require('./endpoints/create')
+
 app.use(express.static('public'));
 app.use(express.json({limit: '200mb'})); 
 app.use(cors());
@@ -18,22 +23,23 @@ const storage = multer.diskStorage({
     cb(null, file.originalname)
   }
 });
+
+// Set server-wide stability service to prevent crashes
+
+const statbilityService = async (req, res, endpoint) => {
+  try {
+    await endpoint(req, res);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json('Internal server error');
+  }
+}
+
 const upload = multer({ storage: storage });
 
 // Handle file upload POST request
-app.post('/create', upload.single('file1'), (req, res) => {
-  const { name, systemPrompt, userPrompt, model } = req.body;
-  const files = req.file;
+app.post('/create', upload.single('file1'), (req, res) => statbilityService(req, res, create.create));
 
-  // Process the received data
-  console.log('Name:', name);
-  console.log('SystemPrompt:', systemPrompt);
-  console.log('UserPrompt:', userPrompt);
-  console.log('Files:', files);
-
-  // Respond with success message
-  res.send('Files uploaded successfully.');
-});
 app.post('/test', (req, res) => res.status(200).json(req.body))
 
 // Load SSL certificates
