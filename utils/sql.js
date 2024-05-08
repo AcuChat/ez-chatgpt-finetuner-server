@@ -28,3 +28,24 @@ exports.query = async query => {
 }
 
 exports.escape = str => mysql.escape(str);
+
+const createProjectsTable = async () => {
+    const q = `CREATE TABLE IF NOT EXISTS projects (
+        project_id VARCHAR(40) NOT NULL PRIMARY KEY,
+        project_name VARCHAR(256) NOT NULL,
+        system_prompt MEDIUMTEXT,
+        user_prompt MEDIUMTEXT,
+        openai_key VARCHAR(256),
+        model VARCHAR(256),
+        status VARCHAR(128),
+        info MEDIUMTEXT
+    )`
+
+    const r = await this.query(q);
+}
+
+const createTables = async () => {
+    await createProjectsTable();
+}
+
+createTables();

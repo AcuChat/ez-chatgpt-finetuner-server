@@ -1,3 +1,5 @@
+const sql = require('../utils/sql');
+
 exports.create = async (req, res) => {
     const { name, systemPrompt, userPrompt, model, openAiKey } = req.body;
     const files = req.file;

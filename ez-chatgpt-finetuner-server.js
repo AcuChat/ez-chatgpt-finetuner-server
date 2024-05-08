@@ -6,7 +6,7 @@ const app = express();
 const cors = require('cors');
 
 /**
- * Endpoints
+ * Import endpoint libraries
  */
 const create = require('./endpoints/create')
 
@@ -14,7 +14,9 @@ app.use(express.static('public'));
 app.use(express.json({limit: '200mb'})); 
 app.use(cors());
 
-// Set up multer for file uploads
+/**
+ * Configure multer for file uploads
+ */
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, '/tmp/')
@@ -23,8 +25,11 @@ const storage = multer.diskStorage({
     cb(null, file.originalname)
   }
 });
+const upload = multer({ storage: storage });
 
-// Set server-wide stability service to prevent crashes
+/** 
+ * Endpoint stability service to prevent crashes
+ */ 
 
 const statbilityService = async (req, res, endpoint) => {
   try {
@@ -35,21 +40,20 @@ const statbilityService = async (req, res, endpoint) => {
   }
 }
 
-const upload = multer({ storage: storage });
-
-// Handle file upload POST request
+/**
+ * Endpoints
+ */
 app.post('/create', upload.single('file1'), (req, res) => statbilityService(req, res, create.create));
 
-app.post('/test', (req, res) => res.status(200).json(req.body))
 
-// Load SSL certificates
+/**
+ * Launch SSL Server
+ */
 const options = {
   key: fs.readFileSync('/etc/ssl-keys/acur.ai/acur.ai.key'),
   cert: fs.readFileSync('/etc/ssl-keys/acur.ai/acur.ai.pem'),
 };
 
-console.log('here')
-// Create HTTPS server
 https.createServer(options, app).listen(6100, () => {
   console.log('Server is running on port 6100');
 });
