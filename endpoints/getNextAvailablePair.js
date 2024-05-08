@@ -17,5 +17,5 @@ exports.getNextAvailablePair = async (req, res) => {
 
     console.log(r);
     if (r.length) return res.status(200).json(r[0]);
-    return res.status(200).json(false);
+    return res.status(200).json({});
 }
