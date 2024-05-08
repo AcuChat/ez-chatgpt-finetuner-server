@@ -51,7 +51,7 @@ const createResponsesTable = async () => {
         input MEDIUMTEXT NOT NULL,
         orig_output MEDIUMTEXT,
         edited_output MEDIUMTEXT,
-        editor_id VARCHAR(40),
+        editor_id VARCHAR(40) NOT NULL DEFAULT '',
         ts BIGINT,
         status VARCHAR(128),
         info MEDIUMTEXT,
