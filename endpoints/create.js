@@ -11,10 +11,12 @@ exports.create = async (req, res) => {
     console.log('UserPrompt:', userPrompt);
     console.log('Files:', files);
 
+    // populate the projects table with status = 'creating'
     const projectId = uuidv4();
-    // populate the projects table
-        // status 'creating'
-
+    let q = `INSERT INTO projects (project_id, project_name, system_prompt, user_prompt, model, openai_key, status, info) 
+    VALUES('${projectId}', ${sql.escape(name)}, ${sql.escape(systemPrompt)}, ${sql.escape(userPrompt)}, ${sql.escape(model)}, ${sql.escape(openAiKey)}, 'creating', '{}')`;
+    let r = await sql.query(q);
+    
     res.send('ok');
 
     // cycle through inputs
