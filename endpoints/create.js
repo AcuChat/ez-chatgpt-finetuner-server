@@ -32,11 +32,11 @@ exports.create = async (req, res) => {
 
             const prompt = userPrompt + lines[i];
             const messages = ai.initialMessagePair(prompt, systemPrompt);
-            console.log(messages);
+
+            const result = await ai.getJsonResponse(openaiKey, model, messages);
+            console.log(result);
             break;
         }
-
-
 
     })
     

@@ -1,3 +1,5 @@
+const axios = require('axios');
+
 exports.initialMessagePair = (prompt, service = "You are a helpful assistant.") => {
     return [
         {
@@ -40,7 +42,8 @@ exports.openAIGenericChatCompletion = async (apiKey, model, messages, temperatur
             result = await axios(request);
             success = true;
         } catch (err) {
-            console.error("axios err.data", err.response.status, err.response.statusText);
+            console.error(err);
+            console.error("axios err.data", err?.response?.status, err?.response?.statusText);
             ++count;
             if (count >= maxRetries || (err.response.status >= 400 && err.response.status <= 499) ) {
                 console.log("STATUS 400 EXIT");
@@ -63,8 +66,13 @@ exports.openAIGenericChatCompletion = async (apiKey, model, messages, temperatur
         finishReason: result.data.choices[0].finish_reason,
         content: result.data.choices[0].message.content
     }
-
-    if (debug) console.log(response);
-
     return response;
+}
+
+exports.getJsonResponse = async (apiKey, model, messages, temperature = .7, top_p = null, maxRetries = 10) => {
+    const result = await this.openAIGenericChatCompletion(apiKey, model, messages, temperature, top_p, maxRetries);
+    if (result.status === 'error') return false;
+
+    const obj = JSON.parse(result.content);
+    return obj;
 }
