@@ -1,4 +1,5 @@
 const sql = require('../utils/sql');
+const { v4: uuidv4 } = require('uuid');
 
 exports.create = async (req, res) => {
     const { name, systemPrompt, userPrompt, model, openAiKey } = req.body;
@@ -10,6 +11,7 @@ exports.create = async (req, res) => {
     console.log('UserPrompt:', userPrompt);
     console.log('Files:', files);
 
+    const projectId = uuidv4();
     // populate the projects table
         // status 'creating'
 
