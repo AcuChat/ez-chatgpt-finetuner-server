@@ -1,5 +1,8 @@
 const sql = require('../utils/sql');
+const ai = require('../utils/ai');
+
 const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
 
 exports.create = async (req, res) => {
     const { name, systemPrompt, userPrompt, model, openaiKey } = req.body;
@@ -19,6 +22,24 @@ exports.create = async (req, res) => {
     
     res.send('ok');
 
+    fs.readFile(files.path, "utf8", async (err, data) => {
+        lines = data.split("\n");
+
+        for (let i = 0; i < lines.length; ++i) {
+            let q = `SELECT response_id FROM responses WHERE project_id = '${projectId}' AND input = ${sql.escape(lines[i])}`;
+            let r = await sql.query(q);
+            if (r.length) continue;
+
+            const prompt = userPrompt + lines[i];
+            const messages = ai.initialMessagePair(prompt, systemPrompt);
+            console.log(messages);
+            break;
+        }
+
+
+
+    })
+    
     // cycle through inputs
         // check if project_id / input is already in database
             // if yes, continue to next input
