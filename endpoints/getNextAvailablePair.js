@@ -12,7 +12,7 @@ exports.getNextAvailablePair = async (req, res) => {
     let q = `UPDATE responses SET editor_id = '${reservation}', ts=${seconds} WHERE project_id = ${sql.escape(projectId)} AND editor_id = '' LIMIT 1`;
     let r = await sql.query(q);
 
-    q = `SELECT input, orig_output FROM responses WHERE project_id = ${sql.escape(projectId)} AND editor_id = '${reservation}'`;
+    q = `SELECT response_id, project_id, input, orig_output FROM responses WHERE project_id = ${sql.escape(projectId)} AND editor_id = '${reservation}'`;
     r = await sql.query(q);
 
     console.log(r);
