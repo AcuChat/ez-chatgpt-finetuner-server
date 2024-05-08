@@ -44,8 +44,25 @@ const createProjectsTable = async () => {
     const r = await this.query(q);
 }
 
+const createResponsesTable = async () => {
+    const q = `CREATE TABLE IF NOT EXISTS responses (
+        response_id VARCHAR(40) NOT NULL PRIMARY KEY,
+        project_id VARCHAR(40) NOT NULL,
+        input MEDIUMTEXT NOT NULL,
+        orig_output MEDIUMTEXT,
+        edited_output MEDIUMTEXT,
+        editor_id VARCHAR(40),
+        ts BIGINT,
+        status VARCHAR(128),
+        info MEDIUMTEXT
+    )`
+
+    const r = await this.query(q);
+}
+
 const createTables = async () => {
     await createProjectsTable();
+    await createResponsesTable();
 }
 
 createTables();
