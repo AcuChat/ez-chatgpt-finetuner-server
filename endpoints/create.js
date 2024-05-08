@@ -47,7 +47,6 @@ exports.create = async (req, res) => {
 
     })
     
-    // set project status to 'created'
-  
-    // Respond with success message
+    q = `UPDATE projects SET status = 'created' WHERE project_id = '${projectId}'`;
+    r = await sql.query(q);
 }
