@@ -2,7 +2,7 @@ const sql = require('../utils/sql');
 const { v4: uuidv4 } = require('uuid');
 
 exports.create = async (req, res) => {
-    const { name, systemPrompt, userPrompt, model, openAiKey } = req.body;
+    const { name, systemPrompt, userPrompt, model, openaiKey } = req.body;
     const files = req.file;
   
     // Process the received data
@@ -14,7 +14,7 @@ exports.create = async (req, res) => {
     // populate the projects table with status = 'creating'
     const projectId = uuidv4();
     let q = `INSERT INTO projects (project_id, project_name, system_prompt, user_prompt, model, openai_key, status, info) 
-    VALUES('${projectId}', ${sql.escape(name)}, ${sql.escape(systemPrompt)}, ${sql.escape(userPrompt)}, ${sql.escape(model)}, ${sql.escape(openAiKey)}, 'creating', '{}')`;
+    VALUES('${projectId}', ${sql.escape(name)}, ${sql.escape(systemPrompt)}, ${sql.escape(userPrompt)}, ${sql.escape(model)}, ${sql.escape(openaiKey)}, 'creating', '{}')`;
     let r = await sql.query(q);
     
     res.send('ok');

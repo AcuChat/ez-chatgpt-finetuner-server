@@ -54,7 +54,8 @@ const createResponsesTable = async () => {
         editor_id VARCHAR(40),
         ts BIGINT,
         status VARCHAR(128),
-        info MEDIUMTEXT
+        info MEDIUMTEXT,
+        INDEX (project_id)
     )`
 
     const r = await this.query(q);
