@@ -9,6 +9,7 @@ const cors = require('cors');
  * Import endpoint libraries
  */
 const create = require('./endpoints/create')
+const getProjects = require('./endpoints/getProjects');
 
 app.use(express.static('public'));
 app.use(express.json({limit: '200mb'})); 
@@ -44,7 +45,7 @@ const statbilityService = async (req, res, endpoint) => {
  * Endpoints
  */
 app.post('/create', upload.single('file1'), (req, res) => statbilityService(req, res, create.create));
-
+app.get('/getProjects', (req, res) => statbilityService(req, res, getProjects.getProjects));
 
 /**
  * Launch SSL Server
