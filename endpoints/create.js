@@ -9,10 +9,19 @@ exports.create = async (req, res) => {
     console.log('Files:', files);
 
     // populate the projects table
+        // status 'creating'
 
+    res.send('ok');
 
+    // cycle through inputs
+        // check if project_id / input is already in database
+            // if yes, continue to next input
 
+        // send command to model
+        
+        // add response row to database
+
+    // set project status to 'created'
   
     // Respond with success message
-    res.send('Files uploaded successfully.');
 }
