@@ -23,11 +23,12 @@ exports.create = async (req, res) => {
     res.send('ok');
 
     fs.readFile(files.path, "utf8", async (err, data) => {
-        lines = data.split("\n");
+        const lines = data.split("\n");
 
         for (let i = 0; i < lines.length; ++i) {
             if (!lines[i]) continue; // ignore empty lines
-            let q = `SELECT response_id FROM responses WHERE project_id = '${projectId}' AND input = ${sql.escape(lines[i])}`;
+            const line = JSON.parse(lines[i]);
+            let q = `SELECT response_id FROM responses WHERE project_id = '${projectId}' AND input = ${sql.escape(line)}`;
             let r = await sql.query(q);
             if (r.length) continue;
 
@@ -39,7 +40,7 @@ exports.create = async (req, res) => {
             if (result.status === 'success') {
                 const responseId = uuidv4();
                 q = `INSERT INTO responses (response_id, project_id, input, orig_output, status, info) 
-                VALUES ('${responseId}', '${projectId}', ${sql.escape(lines[i])}, ${sql.escape(result.content)}, 'inserted', '{}')`;
+                VALUES ('${responseId}', '${projectId}', ${sql.escape(line)}, ${sql.escape(result.content)}, 'inserted', '{}')`;
                 r = await sql.query(q);
             }
             console.log(i+1, lines[i], result.content);
