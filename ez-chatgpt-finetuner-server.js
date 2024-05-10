@@ -15,6 +15,7 @@ const create = require('./endpoints/create')
 const getProjects = require('./endpoints/getProjects');
 const getNextAvailablePair = require('./endpoints/getNextAvailablePair');
 const submission = require('./endpoints/submission');
+const updateProjectStatus = require('./endpoints/updateProjectStatus');
 
 app.use(express.static('public'));
 app.use(express.json({limit: '200mb'})); 
@@ -69,6 +70,7 @@ app.get('/getProjects', (req, res) => statbilityService(req, res, getProjects.ge
 app.post('/create', upload.single('file1'), (req, res) => statbilityService(req, res, create.create));
 app.post('/nextAvailablePair', (req, res) => statbilityService(req, res, getNextAvailablePair.getNextAvailablePair));
 app.post('/submission', (req, res) => statbilityService(req, res, submission.submission));
+app.post('/update-project-status', (req, res) => statbilityService(req, res, updateProjectStatus.updateProjectStatus));
 
 /**
  * Launch SSL Server
