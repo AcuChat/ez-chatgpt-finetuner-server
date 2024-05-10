@@ -76,3 +76,86 @@ exports.getJsonResponse = async (apiKey, model, messages, temperature = .7, top_
     const obj = JSON.parse(result.content);
     return obj;
 }
+
+exports.uploadFile = async (file) => {
+    try {
+        const response = await openai.createFile(
+        fs.createReadStream(file),
+        "fine-tune"
+        );
+        console.log('File ID: ', response.data.id)
+        return response.data.id;
+    } catch (err) {
+        console.log('err: ', err)
+    }
+}
+
+exports.fineTune = async (fileId, openAiKey, base_model = 'gpt-3.5-turbo-1106', n_epochs = 0, learning_rate_multiplier = 0, batch_size = 0) => {
+
+    const request = {
+        url: `https://api.openai.com/v1/fine_tuning/jobs`,
+        method: 'post',
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${openAiKey}`
+        },
+        data: {
+            training_file: fileId,
+            model: base_model,
+            hyperparameters: {}
+        }
+    }
+
+    if (n_epochs) request.data.hyperparameters.n_epochs = n_epochs;
+    if (learning_rate_multiplier) request.data.hyperparameters.learning_rate_multiplier = learning_rate_multiplier;
+    if (batch_size) request.data.hyperparameters.batch_size = batch_size;
+
+    try {
+        const response = await axios(request);
+        console.log(response.data);
+        return response.data;
+    } catch(e) {
+        console.error(e);
+    }
+}
+
+exports.createFineTuneJob = async (systemPrompt, userPrompt, inputArr, desiredOutputArr, openAiKey, baseModel = 'gpt-3.5-turbo-1106', n_epochs = 0, learning_rate_multiplier = 0, batch_size = 0) => {
+    const outFile = `/tmp/finetune_${uuidv4()}.jsonl`;
+    for (let i = 0; i < inputArr.length; ++i) {
+        const entry = {
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt + inputArr[i] },
+              { role: "assistant", content: desiredOutputArr[i] }
+            ]
+        }
+
+        fs.appendFileSync(outFile, JSON.stringify(entry) + "\n", "utf-8");
+    }
+
+    const fileId = await ai.uploadFile(outFile);
+
+    return await this.fineTune(fileId, openAiKey, baseModel, n_epochs, learning_rate_multiplier, batch_size);
+}
+
+exports.createUserPromptsArray = (userPrompt, textArray) => textArray.map(text = `'''${userPrompt}\nText:\n${text}'''`);
+
+exports.listFineTuningJobs = async (openAiKey) => {
+    const request = {
+        url: `https://api.openai.com/v1/fine_tuning/jobs`,
+        method: 'get',
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${openAiKey}`
+        },
+    }
+
+    try {
+        const response = await axios(request);
+        console.log(JSON.stringify(response.data, null, 4));
+        return response.data;
+    } catch (e) {
+        console.error(e, e.error);
+        return [];
+    }
+}

@@ -8,5 +8,5 @@ exports.updateProjectStatus = async (req, res) => {
     const q = `UPDATE projects SET status = ${sql.escape(status)} WHERE project_id = ${sql.escape(projectId)}`;
     const r = await sql.query(q);
 
-    return res.status(200).json(ok);
+    return res.status(200).json("ok");
 }
