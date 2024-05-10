@@ -29,7 +29,7 @@ exports.query = async query => {
 
 exports.escape = str => mysql.escape(str);
 
-exports.tsDefault = () => 9715188606;
+exports.tsDefault = 9715188606;
 
 const createProjectsTable = async () => {
     const q = `CREATE TABLE IF NOT EXISTS projects (
@@ -57,7 +57,8 @@ const createResponsesTable = async () => {
         ts BIGINT DEFAULT 9715188606,
         status VARCHAR(128),
         info MEDIUMTEXT,
-        INDEX (project_id)
+        INDEX (project_id),
+        INDEX (ts)
     )`
 
     const r = await this.query(q);

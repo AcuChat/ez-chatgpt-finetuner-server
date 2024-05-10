@@ -1,9 +1,12 @@
+require('dotenv').config();
 const https = require('https');
 const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
 const app = express();
 const cors = require('cors');
+
+const sql = require('./utils/sql');
 
 /**
  * Import endpoint libraries
@@ -17,6 +20,20 @@ app.use(express.static('public'));
 app.use(express.json({limit: '200mb'})); 
 app.use(cors());
 
+/**
+ * Clear out expired edits so that they can be reassigned
+ */
+const { MAX_EDIT_TIME_IN_SECONDS } = process.env; 
+const expirationIntervalTime = (MAX_EDIT_TIME_IN_SECONDS + 1) * 1000;
+const resetExpired = async () => {
+  const curSeconds = new Date().getTime() / 1000;
+  const expirationSeconds = curSeconds - MAX_EDIT_TIME_IN_SECONDS;
+  const q = `UPDATE responses SET editor_id='', ts=${sql.tsDefault} WHERE ts <= ${expirationSeconds}`;
+  const r = await sql.query(q);
+  console.log('Expiration Interval', r);
+}
+setInterval(resetExpired, expirationIntervalTime);
+resetExpired();
 /**
  * Configure multer for file uploads
  */
