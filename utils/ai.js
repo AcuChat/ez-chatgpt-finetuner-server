@@ -1,4 +1,9 @@
 const axios = require('axios');
+const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
+const OpenAIApi = require('openai');
+
+
 
 exports.initialMessagePair = (prompt, service = "You are a helpful assistant.") => {
     return [
@@ -77,16 +82,21 @@ exports.getJsonResponse = async (apiKey, model, messages, temperature = .7, top_
     return obj;
 }
 
-exports.uploadFile = async (file) => {
+exports.uploadFile = async (fileName, openai) => {
+    console.log('uploadFile', fileName);
     try {
-        const response = await openai.createFile(
-        fs.createReadStream(file),
-        "fine-tune"
+        const file = await OpenAIApi.toFile(fs.createReadStream(fileName));
+        const response = await openai.files.create(
+            {
+                file: file,
+                purpose: "fine-tune"
+            }
         );
-        console.log('File ID: ', response.data.id)
-        return response.data.id;
+        console.log('File ID: ', response?.id)
+        return response?.id;
     } catch (err) {
-        console.log('err: ', err)
+        console.log('err: ', err);
+        return false;
     }
 }
 
@@ -110,12 +120,14 @@ exports.fineTune = async (fileId, openAiKey, base_model = 'gpt-3.5-turbo-1106', 
     if (learning_rate_multiplier) request.data.hyperparameters.learning_rate_multiplier = learning_rate_multiplier;
     if (batch_size) request.data.hyperparameters.batch_size = batch_size;
 
+    console.log('fine tune request')
+
     try {
         const response = await axios(request);
-        console.log(response.data);
+        console.log('FineTune response', response.data);
         return response.data;
     } catch(e) {
-        console.error(e);
+        console.error(e.response.data);
     }
 }
 
@@ -133,7 +145,10 @@ exports.createFineTuneJob = async (systemPrompt, userPrompt, inputArr, desiredOu
         fs.appendFileSync(outFile, JSON.stringify(entry) + "\n", "utf-8");
     }
 
-    const fileId = await ai.uploadFile(outFile);
+    const openai = new OpenAIApi({
+        apiKey: openAiKey
+    });
+    const fileId = await this.uploadFile(outFile, openai);
 
     return await this.fineTune(fileId, openAiKey, baseModel, n_epochs, learning_rate_multiplier, batch_size);
 }

@@ -17,5 +17,29 @@ exports.finetune = async (req, res) => {
 
     console.log(openai_key, system_prompt, user_prompt);
 
+    q = `SELECT input, edited_output FROM responses WHERE project_id = ${sql.escape(projectId)}`;
+    r = await sql.query(q);
+
+    const inputArr = [];
+    const desiredOutputArr = [];
+
+    for (let i = 0; i < r.length; ++i) {
+        if (!r[i].edited_output) continue;
+        inputArr.push(r[i].input);
+        desiredOutputArr.push(r[i].edited_output);
+    }
+
+    console.log('inputArr', inputArr);
+    console.log('desiredOutput', desiredOutputArr);
+
+    const job = await ai.createFineTuneJob(system_prompt, user_prompt, inputArr, desiredOutputArr, openai_key, 'gpt-3.5-turbo-1106', numEpochs, learningRate, batchSize);
+
+    const info = {
+        job
+    }
+
+    q = `UPDATE projects SET status='finetuning', info=${sql.escape(JSON.stringify(info))} WHERE project_id = ${sql.escape(projectId)}`;
+    r = await sql.query(q);
+
     return res.status(200).json('ok');
 }
