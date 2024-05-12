@@ -8,6 +8,14 @@ exports.finetune = async (req, res) => {
     if (typeof learningRate === 'undefined') return res.status(400).json('Bad Command: missing learningRate');
     if (typeof batchSize === 'undefined') return res.status(400).json('Bad Command: missing batchSize');
     
+    let q = `SELECT openai_key FROM projects WHERE project_id = ${sql.escape(projectId)}`;
+    let r = await sql.query(q);
+
+    if (!r.length) return res.status(400).json('Bad Command: invalid projectId');
+
+    const openAiKey = r[0].openai_key;
+
+    console.log(openAiKey);
 
     return res.status(200).json('ok');
 }
