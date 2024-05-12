@@ -41,5 +41,5 @@ exports.finetune = async (req, res) => {
     q = `UPDATE projects SET status='finetuning', info=${sql.escape(JSON.stringify(info))} WHERE project_id = ${sql.escape(projectId)}`;
     r = await sql.query(q);
 
-    return res.status(200).json('ok');
+    return res.status(200).json(job);
 }

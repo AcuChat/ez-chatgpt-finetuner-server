@@ -171,6 +171,6 @@ exports.listFineTuningJobs = async (openAiKey) => {
         return response.data;
     } catch (e) {
         console.error(e, e.error);
-        return [];
+        return null;
     }
 }
