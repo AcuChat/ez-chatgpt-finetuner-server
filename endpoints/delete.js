@@ -10,6 +10,6 @@ exports.delete = async (req, res) => {
     q = `DELETE FROM projects WHERE project_id = ${sql.escape(projectId)}`;
     r = await sql.query(q);
 
-    return res.status(200);
+    return res.status(200).json('ok');
 
 }
