@@ -74,6 +74,7 @@ app.post('/submission', (req, res) => statbilityService(req, res, submission.sub
 app.post('/update-project-status', (req, res) => statbilityService(req, res, updateProjectStatus.updateProjectStatus));
 app.post('/finetune', (req, res) => statbilityService(req, res, finetune.finetune));
 
+
 /**
  * Launch SSL Server
  */
@@ -85,3 +86,7 @@ const options = {
 https.createServer(options, app).listen(6100, () => {
   console.log('Server is running on port 6100');
 });
+
+const createPrompts = require('./utils/createPrompts');
+createPrompts.createPrompts();
+
