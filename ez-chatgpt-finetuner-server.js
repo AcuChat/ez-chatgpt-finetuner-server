@@ -87,6 +87,6 @@ https.createServer(options, app).listen(6100, () => {
   console.log('Server is running on port 6100');
 });
 
-const createPrompts = require('./utils/createPrompts');
-createPrompts.createPrompts();
+// const createPrompts = require('./utils/createPrompts');
+// createPrompts.createPrompts();
 

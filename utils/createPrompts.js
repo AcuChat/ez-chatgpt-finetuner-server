@@ -9,7 +9,8 @@ exports.createPrompts = async () => {
     const prompts = [];
     r.forEach(p => {
         const prompt = JSON.parse(p.edited_output);
-        console.log(prompt);
+        fs.appendFileSync('prompts.jsonl', JSON.stringify(prompt[0]) + "\n", 'utf8')
+        console.log(prompt[0]);
     })
 
 }
