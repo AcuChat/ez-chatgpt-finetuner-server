@@ -13,5 +13,7 @@ exports.status = async (req, res) => {
     info = JSON.parse(info);
 
     console.log(info);
+    const { job } = info;
+    console.log('job', job);
     return res.status(200).json(info);
 }
