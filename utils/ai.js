@@ -181,12 +181,11 @@ exports.getFineTuneJob = async (jobId, openAiKey) => {
         apiKey: openAiKey
     });
     
-    async function main() {
-      const fineTune = await openai.fineTuning.jobs.retrieve("ftjob-abc123");
+  
+      const fineTune = await openai.fineTuning.jobs.retrieve(jobId);
     
       console.log(fineTune);
       return fineTune;
-    }
 }
 
 
