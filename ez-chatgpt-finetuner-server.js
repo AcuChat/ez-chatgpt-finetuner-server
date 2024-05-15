@@ -18,6 +18,7 @@ const submission = require('./endpoints/submission');
 const updateProjectStatus = require('./endpoints/updateProjectStatus');
 const finetune = require('./endpoints/finetune');
 const del = require('./endpoints/delete');
+const status = require('./endpoints/status');
 
 app.use(express.static('public'));
 app.use(express.json({limit: '200mb'})); 
@@ -75,6 +76,7 @@ app.post('/submission', (req, res) => statbilityService(req, res, submission.sub
 app.post('/update-project-status', (req, res) => statbilityService(req, res, updateProjectStatus.updateProjectStatus));
 app.post('/finetune', (req, res) => statbilityService(req, res, finetune.finetune));
 app.post('/delete', (req, res) => statbilityService(req, res, del.delete));
+app.post('/status', (req, res) => statbilityService(req, res, status.status));
 
 /**
  * Launch SSL Server
