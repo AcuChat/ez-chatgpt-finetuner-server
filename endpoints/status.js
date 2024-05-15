@@ -15,12 +15,14 @@ exports.status = async (req, res) => {
 
     if (!r.length) return res.status(400).json('bad command: no such project');
 
-    let { project_name, status, info, openai_key } = r[0];
+    let { project_name, status, info, openai_key, system_prompt, user_prompt } = r[0];
     info = JSON.parse(info);
 
     console.log(info);
     const { job } = info;
     console.log('job', job);
     const jobInfo = await ai.getFineTuneJob(job.id, openai_key);
+    jobInfo.systemPrompt = system_prompt;
+    jobInfo.userPrompt = user_prompt;
     return res.status(200).json(jobInfo);
 }
