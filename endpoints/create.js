@@ -32,7 +32,7 @@ exports.create = async (req, res) => {
             let r = await sql.query(q);
             if (r.length) continue;
 
-            const prompt = userPrompt + lines[i];
+            const prompt = userPrompt + line;
             const messages = ai.initialMessagePair(prompt, systemPrompt);
 
             const result = await ai.openAIGenericChatCompletion(openaiKey, model, messages);
